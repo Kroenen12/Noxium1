@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOXIUM</title>
+    <title>NOXIUM AI</title>
     <style>
         * {
             margin: 0;
@@ -56,7 +56,6 @@
             opacity: 0;
             transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        /* Styl paska */
         .nav-bar {
             position: absolute;
             top: 0;
@@ -82,13 +81,13 @@
             max-width: 1200px;
             padding: 0 30px;
         }
-        /* Logo w lewym górnym rogu */
         .nav-logo {
             position: absolute;
             left: 30px;
             height: 24px;
             filter: brightness(0);
             transition: all 0.3s ease;
+            cursor: pointer;
         }
         .nav-logo:hover {
             opacity: 0.8;
@@ -121,6 +120,7 @@
             opacity: 1;
             transition: all 0.3s ease;
             filter: brightness(0) contrast(1.2);
+            cursor: pointer;
         }
         .nav-icon:hover {
             filter: brightness(0) opacity(0.7);
@@ -134,7 +134,6 @@
             opacity: 1;
             transform: translateY(0);
         }
-        /* Przycisk chatu */
         .chat-button {
             position: fixed;
             bottom: 30px;
@@ -166,7 +165,6 @@
             font-weight: bold;
             color: black;
         }
-        /* Okno chatu */
         .chat-container {
             position: fixed;
             bottom: 100px;
@@ -180,6 +178,13 @@
             flex-direction: column;
             z-index: 1000;
             overflow: hidden;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.3, 1);
+        }
+        .chat-container.visible {
+            transform: translateY(0);
+            opacity: 1;
         }
         .chat-header {
             padding: 15px;
@@ -233,13 +238,249 @@
             border-radius: 20px;
             cursor: pointer;
         }
-        /* Opóźnienia dla liter */
         .active .letter:nth-child(1) { transition-delay: 0.08s; }
         .active .letter:nth-child(2) { transition-delay: 0.16s; }
         .active .letter:nth-child(3) { transition-delay: 0.24s; }
         .active .letter:nth-child(4) { transition-delay: 0.32s; }
         .active .letter:nth-child(5) { transition-delay: 0.40s; }
         .active .letter:nth-child(6) { transition-delay: 0.48s; }
+        
+        /* Nowe style dla AI */
+        .typing-indicator {
+            display: flex;
+            padding: 10px 15px;
+            background: #f0f0f0;
+            border-radius: 18px;
+            align-self: flex-start;
+            margin-bottom: 10px;
+            border-bottom-left-radius: 5px;
+        }
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #888;
+            border-radius: 50%;
+            margin: 0 2px;
+            animation: typingAnimation 1.4s infinite ease-in-out;
+        }
+        .typing-dot:nth-child(1) { animation-delay: 0s; }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        
+        @keyframes typingAnimation {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-5px); }
+        }
+        
+        /* Wyszukiwarka */
+        .search-container {
+            position: fixed;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 500px;
+            max-width: 80%;
+            background: white;
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: none;
+            flex-direction: column;
+            z-index: 100;
+            overflow: hidden;
+            animation: searchSlideDown 0.3s ease-out;
+        }
+        
+        @keyframes searchSlideDown {
+            from { opacity: 0; transform: translate(-50%, -20px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
+        }
+        
+        .search-input {
+            padding: 15px;
+            display: flex;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .search-input input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            outline: none;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .search-input input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        }
+        
+        .search-results {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .search-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border-bottom: 1px solid #f5f5f5;
+            display: flex;
+            align-items: center;
+        }
+        
+        .search-item:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .search-item-text {
+            flex: 1;
+        }
+        
+        .search-item-title {
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .search-item-desc {
+            font-size: 12px;
+            color: #777;
+            margin-top: 3px;
+        }
+        
+        .search-message {
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .search-no-results {
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        /* Nowe style dla koszyka */
+        .cart-container {
+            position: fixed;
+            top: 50px;
+            right: 30px;
+            width: 350px;
+            max-height: 500px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 25px rgba(0,0,0,0.2);
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
+            overflow: hidden;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.3, 1);
+        }
+        
+        .cart-container.visible {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .cart-header {
+            padding: 15px;
+            background: #f5f5f5;
+            border-bottom: 1px solid #e0e0e0;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .cart-items {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            max-height: 300px;
+        }
+        
+        .cart-item {
+            display: flex;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            align-items: center;
+        }
+        
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+        
+        .cart-item-image {
+            width: 50px;
+            height: 50px;
+            background: #f0f0f0;
+            border-radius: 5px;
+            margin-right: 10px;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .cart-item-details {
+            flex: 1;
+        }
+        
+        .cart-item-title {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        
+        .cart-item-price {
+            color: #007bff;
+            font-weight: 600;
+        }
+        
+        .cart-summary {
+            padding: 15px;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .cart-checkout {
+            width: 100%;
+            padding: 12px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .cart-checkout:hover {
+            background: #0056b3;
+        }
+        
+        .cart-empty {
+            padding: 30px;
+            text-align: center;
+            color: #666;
+        }
+        
+        .close-cart {
+            cursor: pointer;
+            font-size: 20px;
+            padding: 0 5px;
+        }
+
+        /* Ukryj ikonę koszyka na starcie */
+        .nav-icon[alt="Cart"] {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -257,207 +498,618 @@
 
     <div class="nav-bar">
         <div class="nav-content">
-            <img class="nav-logo" src="image.png" alt="NOXIUM Logo">
+            <img class="nav-logo" src="image.png" alt="NOXIUM Logo" onclick="resetToInitialState()">
             <div class="nav-title">
                 <span>Store</span>
                 <span>Noxium</span>
             </div>
             <div class="nav-icons">
-                <img class="nav-icon" src="https://cdn-icons-png.flaticon.com/512/3917/3917132.png" alt="Search">
-                <img class="nav-icon" src="https://cdn-icons-png.flaticon.com/512/3144/3144456.png" alt="Cart">
+                <img class="nav-icon" src="https://cdn-icons-png.flaticon.com/512/3917/3917132.png" alt="Search" onclick="toggleSearch()">
+                <img class="nav-icon" src="https://cdn-icons-png.flaticon.com/512/3144/3144456.png" alt="Cart" onclick="toggleCart()">
             </div>
         </div>
     </div>
 
-    <!-- Przycisk i okno chatu -->
+    <div class="search-container" id="searchContainer">
+        <div class="search-input">
+            <input type="text" id="searchInput" placeholder="Search..." onkeypress="handleSearchKeyPress(event)">
+        </div>
+        <div class="search-results" id="searchResults">
+            <div class="search-message">
+                Type to search products, articles and more...
+            </div>
+        </div>
+    </div>
+
     <div class="chat-button" onclick="toggleChat()">
         <span>?</span>
     </div>
 
     <div class="chat-container" id="chatContainer">
         <div class="chat-header">
-            Noxium Support
+            Noxium AI Assistant
         </div>
         <div class="chat-messages" id="chatMessages">
             <!-- Wiadomości będą dodawane dynamicznie -->
         </div>
         <div class="chat-input">
-            <input type="text" id="userInput" placeholder="Type your question..." onkeypress="handleKeyPress(event)">
+            <input type="text" id="userInput" placeholder="Type your message..." onkeypress="handleKeyPress(event)">
             <button onclick="sendMessage()">Send</button>
         </div>
     </div>
 
+    <!-- Dodany kontener koszyka -->
+    <div class="cart-container" id="cartContainer">
+        <div class="cart-header">
+            <span id="cartTitle">Your Cart</span>
+            <span class="close-cart" onclick="closeCart()">×</span>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <!-- Produkty będą dodawane dynamicznie -->
+        </div>
+        <div class="cart-summary" id="cartSummary">
+            <!-- Podsumowanie będzie dodawane dynamicznie -->
+        </div>
+    </div>
+
     <script>
-        // Zmienna przechowująca wykryty język
         let detectedLanguage = 'en';
         let chatOpened = false;
+        let isAITyping = false;
+        let conversationHistory = [];
+        let searchOpened = false;
+        let cartOpened = false;
+        
+        // Rozbudowana baza wiedzy AI
+        const aiResponses = {
+            'en': [
+                "Interesting perspective. Could you elaborate?",
+                "I'm processing your request...",
+                "From my analysis...",
+                "That's a complex question. Let me think...",
+                "Based on available data...",
+                "I've considered several angles...",
+                "The answer depends on context...",
+                "Let me synthesize that information...",
+                "Hello, how can I help you today?"
+            ],
+            'pl': [
+                "Ciekawe spostrzeżenie. Możesz rozwinąć?",
+                "Analizuję twoje zapytanie...",
+                "Z mojej perspektywy...",
+                "To złożone pytanie. Pozwól, że się zastanowię...",
+                "Na podstawie dostępnych danych...",
+                "Rozważyłem różne aspekty...",
+                "Odpowiedź zależy od kontekstu...",
+                "Cześć, w czym mogę pomóc?"
+            ]
+        };
+
+        // Przykładowe wyniki wyszukiwania
+        const searchResultsData = {
+            'en': [
+                {
+                    title: 'Noxium Pro',
+                    description: 'Our flagship product with advanced features'
+                },
+                {
+                    title: 'Documentation',
+                    description: 'Complete guide to using Noxium products'
+                },
+                {
+                    title: 'Latest Update',
+                    description: 'What\'s new in version 2.5'
+                }
+            ],
+            'pl': [
+                {
+                    title: 'Noxium Pro',
+                    description: 'Nasz flagowy produkt z zaawansowanymi funkcjami'
+                },
+                {
+                    title: 'Dokumentacja',
+                    description: 'Kompletny przewodnik użytkownika'
+                },
+                {
+                    title: 'Najnowsza aktualizacja',
+                    description: 'Co nowego w wersji 2.5'
+                }
+            ]
+        };
+
+        // Dane koszyka
+        let cart = [];
+        
+        // Przykładowe produkty
+        const products = {
+            'en': [
+                { id: 1, name: "Noxium Pro", price: 99.99, image: "https://via.placeholder.com/50?text=Noxium+Pro" },
+                { id: 2, name: "Noxium Basic", price: 49.99, image: "https://via.placeholder.com/50?text=Noxium+Basic" },
+                { id: 3, name: "Noxium Add-on", price: 29.99, image: "https://via.placeholder.com/50?text=Add-on" }
+            ],
+            'pl': [
+                { id: 1, name: "Noxium Pro", price: 399.99, image: "https://via.placeholder.com/50?text=Noxium+Pro" },
+                { id: 2, name: "Noxium Basic", price: 199.99, image: "https://via.placeholder.com/50?text=Noxium+Basic" },
+                { id: 3, name: "Dodatek Noxium", price: 129.99, image: "https://via.placeholder.com/50?text=Dodatek" }
+            ]
+        };
 
         function startAnimation() {
             const container = document.querySelector('.container');
             const body = document.body;
-            const navBar = document.querySelector('.nav-bar');
             
-            // 1. Animacja liter
             container.classList.add('active');
             
-            // 2. Zanikanie logo i napisu
             setTimeout(() => {
                 container.classList.add('fade-out');
                 
-                // 3. Pojawienie się paska (wcześniej)
                 setTimeout(() => {
                     body.classList.add('show-nav');
                     
-                    // 4. Rozjaśnianie tła (później)
                     setTimeout(() => {
                         body.classList.add('light-mode');
-                        // Pokazanie przycisku chatu po pojawieniu się białego tła
                         body.classList.add('show-chat-button');
-                        
-                        // Wykrywanie języka przeglądarki
                         detectLanguage();
                     }, 500);
                 }, 700);
             }, 800);
         }
 
-        // Wykrywanie języka
+        function resetToInitialState() {
+            const body = document.body;
+            const container = document.querySelector('.container');
+            
+            // Resetujemy wszystkie klasy
+            body.classList.remove('light-mode', 'show-nav', 'show-chat-button');
+            container.classList.remove('active', 'fade-out');
+            
+            // Resetujemy litery
+            document.querySelectorAll('.letter').forEach(letter => {
+                letter.style.opacity = '0';
+                letter.style.transform = 'translateX(-15px)';
+            });
+            
+            // Resetujemy logo
+            document.querySelector('.logo').style.opacity = '1';
+            document.querySelector('.logo').style.transform = 'none';
+            
+            // Zamykamy otwarte okna
+            closeChat();
+            closeCart();
+            document.getElementById('searchContainer').style.display = 'none';
+            chatOpened = false;
+            searchOpened = false;
+            cartOpened = false;
+        }
+
         function detectLanguage() {
             const userLang = navigator.language || navigator.userLanguage;
-            detectedLanguage = userLang.split('-')[0]; // Pobieramy podstawowy kod języka (np. 'pl' z 'pl-PL')
-            
-            // Obsługiwane języki: en, pl, de, fr, es
-            if (!['en', 'pl', 'de', 'fr', 'es'].includes(detectedLanguage)) {
-                detectedLanguage = 'en'; // Domyślny język angielski
+            detectedLanguage = userLang.split('-')[0];
+            if (!['en', 'pl'].includes(detectedLanguage)) {
+                detectedLanguage = 'en';
             }
         }
 
-        // Funkcje dla chatu
         function toggleChat() {
+            if (chatOpened) {
+                closeChat();
+            } else {
+                openChat();
+            }
+        }
+
+        function openChat() {
             const chatContainer = document.getElementById('chatContainer');
             const chatMessages = document.getElementById('chatMessages');
             
-            chatOpened = !chatOpened;
-            chatContainer.style.display = chatOpened ? 'flex' : 'none';
+            chatOpened = true;
+            chatContainer.style.display = 'flex';
             
-            // Dodanie powitalnej wiadomości tylko przy pierwszym otwarciu
-            if (chatOpened && chatMessages.children.length === 0) {
-                addWelcomeMessage();
+            // Dodajemy klasę visible po krótkim opóźnieniu, aby animacja działała
+            setTimeout(() => {
+                chatContainer.classList.add('visible');
+            }, 10);
+            
+            if (chatMessages.children.length === 0) {
+                const welcomeMessage = detectedLanguage === 'pl' ? 
+                    "Cześć, w czym mogę pomóc?" : 
+                    "Hello, how can I help you today?";
+                
+                simulateTypingEffect(welcomeMessage, chatMessages, 'bot-message', () => {
+                    conversationHistory.push({
+                        sender: 'ai',
+                        message: welcomeMessage,
+                        timestamp: new Date().getTime()
+                    });
+                });
             }
         }
 
-        function addWelcomeMessage() {
-            const chatMessages = document.getElementById('chatMessages');
-            const welcomeMessage = document.createElement('div');
-            welcomeMessage.className = 'message bot-message';
+        function closeChat() {
+            const chatContainer = document.getElementById('chatContainer');
+            chatContainer.classList.remove('visible');
             
-            // Wiadomość powitalna w wykrytym języku
-            const greetings = {
-                'en': "Hello! How can I help you today?",
-                'pl': "Cześć! Jak mogę pomóc?",
-                'de': "Hallo! Wie kann ich Ihnen helfen?",
-                'fr': "Bonjour! Comment puis-je vous aider?",
-                'es': "¡Hola! ¿Cómo puedo ayudarte?"
-            };
+            setTimeout(() => {
+                chatContainer.style.display = 'none';
+                chatOpened = false;
+            }, 300); // Czas trwania animacji
+        }
+
+        function toggleSearch() {
+            const searchContainer = document.getElementById('searchContainer');
+            searchOpened = !searchOpened;
+            searchContainer.style.display = searchOpened ? 'flex' : 'none';
             
-            welcomeMessage.textContent = greetings[detectedLanguage] || greetings['en'];
-            chatMessages.appendChild(welcomeMessage);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+            if (searchOpened) {
+                document.getElementById('searchInput').focus();
+                // Resetujemy wyniki wyszukiwania przy otwarciu
+                showInitialSearchMessage();
+            }
+        }
+
+        function showInitialSearchMessage() {
+            const searchResults = document.getElementById('searchResults');
+            searchResults.innerHTML = `
+                <div class="search-message">
+                    ${detectedLanguage === 'pl' ? 
+                        'Wpisz aby wyszukać produkty, artykuły i więcej...' : 
+                        'Type to search products, articles and more...'}
+                </div>
+            `;
+        }
+
+        function handleSearchKeyPress(event) {
+            if (event.key === 'Enter') {
+                const searchInput = document.getElementById('searchInput');
+                const searchResults = document.getElementById('searchResults');
+                
+                if (searchInput.value.trim() === '') {
+                    showInitialSearchMessage();
+                    return;
+                }
+                
+                // Wyświetlamy animowane kropki
+                searchResults.innerHTML = '';
+                const typingIndicator = document.createElement('div');
+                typingIndicator.className = 'typing-indicator';
+                typingIndicator.innerHTML = `
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                `;
+                searchResults.appendChild(typingIndicator);
+                
+                // Symulujemy wyszukiwanie
+                setTimeout(() => {
+                    displaySearchResults(searchInput.value.trim());
+                }, 1000);
+            }
+        }
+
+        function displaySearchResults(query) {
+            const searchResults = document.getElementById('searchResults');
+            
+            if (query.length < 2) {
+                searchResults.innerHTML = `
+                    <div class="search-message">
+                        ${detectedLanguage === 'pl' ? 
+                            'Wprowadź co najmniej 2 znaki' : 
+                            'Enter at least 2 characters'}
+                    </div>
+                `;
+                return;
+            }
+            
+            // Filtrujemy wyniki (w prawdziwej aplikacji byłoby to zapytanie do API)
+            const filteredResults = searchResultsData[detectedLanguage].filter(item => 
+                item.title.toLowerCase().includes(query.toLowerCase()) || 
+                item.description.toLowerCase().includes(query.toLowerCase())
+            );
+            
+            if (filteredResults.length === 0) {
+                searchResults.innerHTML = `
+                    <div class="search-no-results">
+                        ${detectedLanguage === 'pl' ? 
+                            'Nie znaleziono wyników dla' : 
+                            'No results found for'} 
+                        "<strong>${query}</strong>"
+                    </div>
+                `;
+                return;
+            }
+            
+            // Wyświetlamy wyniki
+            searchResults.innerHTML = '';
+            filteredResults.forEach(item => {
+                const resultItem = document.createElement('div');
+                resultItem.className = 'search-item';
+                resultItem.innerHTML = `
+                    <div class="search-item-text">
+                        <div class="search-item-title">${item.title}</div>
+                        <div class="search-item-desc">${item.description}</div>
+                    </div>
+                `;
+                searchResults.appendChild(resultItem);
+            });
+        }
+
+        function simulateTypingEffect(text, container, className, callback) {
+            let i = 0;
+            const messageElement = document.createElement('div');
+            messageElement.className = `message ${className}`;
+            container.appendChild(messageElement);
+            
+            const typingInterval = setInterval(() => {
+                if (i < text.length) {
+                    messageElement.textContent += text.charAt(i);
+                    container.scrollTop = container.scrollHeight;
+                    i++;
+                } else {
+                    clearInterval(typingInterval);
+                    if (callback) callback();
+                }
+            }, 20 + Math.random() * 30);
         }
 
         function sendMessage() {
             const userInput = document.getElementById('userInput');
             const chatMessages = document.getElementById('chatMessages');
             
-            if (userInput.value.trim() === '') return;
+            if (userInput.value.trim() === '' || isAITyping) return;
             
-            // Dodanie wiadomości użytkownika
-            const userMessage = document.createElement('div');
-            userMessage.className = 'message user-message';
-            userMessage.textContent = userInput.value;
-            chatMessages.appendChild(userMessage);
+            const userMessage = userInput.value.trim();
+            const userMessageElement = document.createElement('div');
+            userMessageElement.className = 'message user-message';
+            userMessageElement.textContent = userMessage;
+            chatMessages.appendChild(userMessageElement);
             
-            // Symulacja odpowiedzi bota
-            setTimeout(() => {
-                const botMessage = document.createElement('div');
-                botMessage.className = 'message bot-message';
-                botMessage.textContent = generateBotResponse(userInput.value);
-                
-                chatMessages.appendChild(botMessage);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }, 1000);
+            conversationHistory.push({
+                sender: 'user',
+                message: userMessage,
+                timestamp: new Date().getTime()
+            });
             
             userInput.value = '';
             chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            setTimeout(() => {
+                isAITyping = true;
+                simulateAIResponse();
+            }, 500);
         }
 
-        function generateBotResponse(userText) {
-            const lowerText = userText.toLowerCase();
+        function simulateAIResponse() {
+            const chatMessages = document.getElementById('chatMessages');
             
-            // Odpowiedzi w różnych językach
-            const responses = {
-                'en': {
-                    'hello': "Hello! How can I assist you today?",
-                    'hi': "Hi there! What can I do for you?",
-                    'help': "I can help with general questions about Noxium. What do you need?",
-                    'product': "You can find all our products in the Store section.",
-                    'default': "I'm a simple bot. For more complex questions, please contact our support team."
-                },
-                'pl': {
-                    'cześć': "Cześć! Jak mogę pomóc?",
-                    'witam': "Witam! Z czym mogę pomóc?",
-                    'pomoc': "Mogę pomóc w podstawowych pytaniach o Noxium. Czego potrzebujesz?",
-                    'produkt': "Wszystkie nasze produkty znajdziesz w sekcji Sklep.",
-                    'default': "Jestem prostym botem. W przypadku bardziej złożonych pytań, skontaktuj się z naszym działem pomocy."
-                },
-                'de': {
-                    'hallo': "Hallo! Wie kann ich Ihnen helfen?",
-                    'guten tag': "Guten Tag! Womit kann ich Ihnen behilflich sein?",
-                    'hilfe': "Ich kann bei allgemeinen Fragen zu Noxium helfen. Was benötigen Sie?",
-                    'produkt': "Alle unsere Produkte finden Sie im Store-Bereich.",
-                    'default': "Ich bin ein einfacher Bot. Bei komplexeren Fragen wenden Sie sich bitte an unser Support-Team."
-                },
-                'fr': {
-                    'bonjour': "Bonjour! Comment puis-je vous aider?",
-                    'salut': "Salut! Que puis-je faire pour vous?",
-                    'aide': "Je peux aider avec des questions générales sur Noxium. De quoi avez-vous besoin?",
-                    'produit': "Vous pouvez trouver tous nos produits dans la section Boutique.",
-                    'default': "Je suis un simple bot. Pour des questions plus complexes, veuillez contacter notre équipe de support."
-                },
-                'es': {
-                    'hola': "¡Hola! ¿Cómo puedo ayudarte?",
-                    'buenos días': "¡Buenos días! ¿En qué puedo ayudarte?",
-                    'ayuda': "Puedo ayudar con preguntas generales sobre Noxium. ¿Qué necesitas?",
-                    'producto': "Puedes encontrar todos nuestros productos en la sección de Tienda.",
-                    'default': "Soy un bot simple. Para preguntas más complejas, por favor contacta a nuestro equipo de soporte."
-                }
-            };
+            const typingIndicator = document.createElement('div');
+            typingIndicator.className = 'message bot-message typing-indicator';
+            typingIndicator.innerHTML = `
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            `;
+            chatMessages.appendChild(typingIndicator);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
             
-            const langResponses = responses[detectedLanguage] || responses['en'];
+            const thinkingTime = 1500 + Math.random() * 2000;
             
-            if (lowerText.includes('hello') || lowerText.includes('hi') || 
-                lowerText.includes('cześć') || lowerText.includes('witam') ||
-                lowerText.includes('hallo') || lowerText.includes('guten tag') ||
-                lowerText.includes('bonjour') || lowerText.includes('salut') ||
-                lowerText.includes('hola') || lowerText.includes('buenos días')) {
-                return langResponses['hello'] || langResponses['default'];
-            } else if (lowerText.includes('help') || lowerText.includes('pomoc') || 
-                      lowerText.includes('hilfe') || lowerText.includes('aide') || 
-                      lowerText.includes('ayuda')) {
-                return langResponses['help'] || langResponses['default'];
-            } else if (lowerText.includes('product') || lowerText.includes('produkt') || 
-                      lowerText.includes('produit') || lowerText.includes('producto')) {
-                return langResponses['product'] || langResponses['default'];
-            } else {
-                return langResponses['default'];
-            }
+            setTimeout(() => {
+                chatMessages.removeChild(typingIndicator);
+                
+                const aiResponse = getRandomResponse();
+                
+                simulateTypingEffect(aiResponse, chatMessages, 'bot-message', () => {
+                    isAITyping = false;
+                    
+                    conversationHistory.push({
+                        sender: 'ai',
+                        message: aiResponse,
+                        timestamp: new Date().getTime()
+                    });
+                    
+                    if (Math.random() > 0.7) {
+                        setTimeout(() => {
+                            addAIMessage(getRandomResponse());
+                        }, 800);
+                    }
+                });
+            }, thinkingTime);
+        }
+
+        function getRandomResponse() {
+            const responses = aiResponses[detectedLanguage];
+            return responses[Math.floor(Math.random() * responses.length)];
+        }
+
+        function addAIMessage(message) {
+            const chatMessages = document.getElementById('chatMessages');
+            isAITyping = true;
+            
+            simulateTypingEffect(message, chatMessages, 'bot-message', () => {
+                isAITyping = false;
+                
+                conversationHistory.push({
+                    sender: 'ai',
+                    message: message,
+                    timestamp: new Date().getTime()
+                });
+            });
         }
 
         function handleKeyPress(event) {
-            if (event.key === 'Enter') {
+            if (event.key === 'Enter' && !isAITyping) {
                 sendMessage();
             }
         }
+
+        // Funkcje obsługi koszyka
+        function toggleCart() {
+            if (cart.length === 0) return; // Nie otwieraj pustego koszyka
+            
+            if (cartOpened) {
+                closeCart();
+            } else {
+                openCart();
+            }
+        }
+        
+        function openCart() {
+            const cartContainer = document.getElementById('cartContainer');
+            cartOpened = true;
+            cartContainer.style.display = 'flex';
+            
+            // Aktualizujemy tytuł koszyka w zależności od języka
+            document.getElementById('cartTitle').textContent = 
+                detectedLanguage === 'pl' ? 'Twój koszyk' : 'Your Cart';
+            
+            // Dodajemy klasę visible po krótkim opóźnieniu, aby animacja działała
+            setTimeout(() => {
+                cartContainer.classList.add('visible');
+            }, 10);
+            
+            updateCartDisplay();
+        }
+        
+        function closeCart() {
+            const cartContainer = document.getElementById('cartContainer');
+            cartContainer.classList.remove('visible');
+            
+            setTimeout(() => {
+                cartContainer.style.display = 'none';
+                cartOpened = false;
+            }, 300); // Czas trwania animacji
+        }
+        
+        function updateCartDisplay() {
+            const cartItems = document.getElementById('cartItems');
+            const cartSummary = document.getElementById('cartSummary');
+            const cartIcon = document.querySelector('.nav-icon[alt="Cart"]');
+            
+            // Pokaż/ukryj ikonę koszyka w zależności od zawartości
+            if (cart.length > 0) {
+                cartIcon.style.display = 'block';
+            } else {
+                cartIcon.style.display = 'none';
+                closeCart(); // Zamknij koszyk jeśli jest pusty
+            }
+            
+            // Wyczyść koszyk
+            cartItems.innerHTML = '';
+            
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<div class="cart-empty">' + 
+                    (detectedLanguage === 'pl' ? 'Twój koszyk jest pusty' : 'Your cart is empty') + 
+                    '</div>';
+                cartSummary.innerHTML = '';
+                return;
+            }
+            
+            // Dodaj produkty do koszyka
+            cart.forEach(item => {
+                const product = products[detectedLanguage].find(p => p.id === item.id);
+                if (product) {
+                    const cartItem = document.createElement('div');
+                    cartItem.className = 'cart-item';
+                    cartItem.innerHTML = `
+                        <div class="cart-item-image" style="background-image: url('${product.image}')"></div>
+                        <div class="cart-item-details">
+                            <div class="cart-item-title">${product.name}</div>
+                            <div class="cart-item-price">${product.price.toFixed(2)} ${detectedLanguage === 'pl' ? 'zł' : '$'}</div>
+                        </div>
+                    `;
+                    cartItems.appendChild(cartItem);
+                }
+            });
+            
+            // Oblicz podsumowanie
+            const total = cart.reduce((sum, item) => {
+                const product = products[detectedLanguage].find(p => p.id === item.id);
+                return sum + (product ? product.price : 0);
+            }, 0);
+            
+            // Dodaj podsumowanie
+            cartSummary.innerHTML = `
+                <div class="cart-total">
+                    <span>${detectedLanguage === 'pl' ? 'Razem' : 'Total'}:</span>
+                    <span>${total.toFixed(2)} ${detectedLanguage === 'pl' ? 'zł' : '$'}</span>
+                </div>
+                <button class="cart-checkout" onclick="checkout()">
+                    ${detectedLanguage === 'pl' ? 'Przejdź do płatności' : 'Proceed to Checkout'}
+                </button>
+            `;
+        }
+        
+        function addToCart(productId) {
+            // Sprawdź czy produkt już jest w koszyku
+            const existingItem = cart.find(item => item.id === productId);
+            
+            if (existingItem) {
+                existingItem.quantity = (existingItem.quantity || 1) + 1;
+            } else {
+                cart.push({ 
+                    id: productId,
+                    quantity: 1
+                });
+            }
+            
+            updateCartDisplay();
+            
+            // Pokaż koszyk jeśli jest zamknięty
+            if (!cartOpened) {
+                openCart();
+            }
+        }
+        
+        function checkout() {
+            alert(detectedLanguage === 'pl' ? 
+                'Dziękujemy za zakupy! Przechodzisz do płatności.' : 
+                'Thank you for your purchase! Proceeding to checkout.');
+            closeCart();
+            cart = []; // Wyczyść koszyk po zakupie
+            updateCartDisplay();
+        }
+
+        // Zamknij wyszukiwarkę, chat i koszyk po kliknięciu poza nimi
+        document.addEventListener('click', function(event) {
+            const searchContainer = document.getElementById('searchContainer');
+            const searchIcon = document.querySelector('.nav-icon[alt="Search"]');
+            const chatContainer = document.getElementById('chatContainer');
+            const chatButton = document.querySelector('.chat-button');
+            const cartContainer = document.getElementById('cartContainer');
+            const cartIcon = document.querySelector('.nav-icon[alt="Cart"]');
+            
+ // Obsługa wyszukiwarki
+            if (searchOpened && 
+                !searchContainer.contains(event.target) && 
+                event.target !== searchIcon) {
+                searchContainer.style.display = 'none';
+                searchOpened = false;
+            }
+            
+            // Obsługa chata
+            if (chatOpened && 
+                !chatContainer.contains(event.target) && 
+                event.target !== chatButton) {
+                closeChat();
+            }
+            
+            // Obsługa koszyka
+            if (cartOpened && 
+                !cartContainer.contains(event.target) && 
+                event.target !== cartIcon) {
+                closeCart();
+            }
+        });
+
+        // Przykładowe dodanie produktów do koszyka (można usunąć)
+        document.addEventListener('DOMContentLoaded', function() {
+            if (detectedLanguage === 'pl') {
+                addToCart(1);
+                addToCart(3);
+            } else {
+                addToCart(2);
+            }
+        });
     </script>
 </body>
 </html>
